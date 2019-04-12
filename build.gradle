@@ -25,6 +25,7 @@ dependencies {
     implementation 'com.google.guava:guava:27.0.1-jre'
     compile group: 'com.sun.xml.ws', name: 'jaxws-rt', version: '2.1.4'
     compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
+    compile 'com.alibaba:fastjson:1.2.57'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
