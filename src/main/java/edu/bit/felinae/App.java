@@ -3,17 +3,29 @@
  */
 package edu.bit.felinae;
 
+import java.io.IOException;
+
 public class App {
-    public String getGreeting() {
-        return "Hello world.";
+    private boolean running = true;
+
+    private static class ExitHandler extends Thread {
+        private HttpService server;
+        public ExitHandler(HttpService server){
+            this.server = server;
+        }
+        public void run() {
+            server.stop();
+        }
     }
 
     public static void main(String[] args) {
-        WebService web = new WebService();
-        try {
-            web.startServer();
-        }catch (Exception e){
-
+        try{
+            HttpService server;
+            server =  new HttpService();
+            Runtime.getRuntime().addShutdownHook(new ExitHandler(server));
+        }catch (IOException ioe){
+            System.err.println("error");
+            System.exit(1);
         }
     }
 }

@@ -27,6 +27,8 @@ dependencies {
     compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
     compile 'com.alibaba:fastjson:1.2.57'
 
+    compile group: 'org.nanohttpd', name: 'nanohttpd', version: '2.3.0'
+
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
 }
