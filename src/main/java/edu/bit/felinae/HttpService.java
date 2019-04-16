@@ -6,6 +6,7 @@ import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.Map;
 
 public class HttpService extends NanoHTTPD {
 
@@ -20,10 +21,18 @@ public class HttpService extends NanoHTTPD {
             case "/get-ticket":
                 return handleTicket(sess);
             case "/status":
-                return handleStatus(sess);
+                return handleQueryStatus(sess);
             default:
                 return newFixedLengthResponse("404");
         }
+    }
+    private Session getSession(IHTTPSession sess) {
+        CookieHandler cookie = sess.getCookies();
+        String session_id = cookie.read("session");
+        Jedis jedis = new Jedis("localhost");
+        String session_str = jedis.get(session_id);
+        Session session = JSON.parseObject(session_str, Session.class);
+        return session;
     }
 
     private Response handleTicket(IHTTPSession sess) {
@@ -43,15 +52,14 @@ public class HttpService extends NanoHTTPD {
         return res;
     }
 
-    private Response handleStatus(IHTTPSession sess){
-        CookieHandler cookie = new CookieHandler(sess.getHeaders());
-        String session_id = cookie.read("session");
-        if(session_id == null) {
-            return newFixedLengthResponse("your session plz");
-        }
-        Jedis jedis = new Jedis("localhost");
-        String session_str = jedis.get(session_id);
-        Session session = JSON.parseObject(session_str, Session.class);
+    private Response handleQueryStatus(IHTTPSession sess){
+        Session session = getSession(sess);
         return newFixedLengthResponse(session.getStatus().toString());
+    }
+
+    private Response handleSubmit(IHTTPSession sess){
+        Session session = getSession(sess);
+        Map<String, String> param = sess.getParms();
+
     }
 }

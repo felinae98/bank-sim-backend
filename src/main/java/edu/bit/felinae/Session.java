@@ -24,6 +24,21 @@ public class Session {
         return money;
     }
 
+    public void setStatus(SessionStatus status) {
+        this.status = status;
+    }
+
+    public void setOperaion(Operaion operaion) {
+        this.operaion = operaion;
+    }
+
+    public void setBalance(float balance) {
+        this.balance = balance;
+    }
+
+    public void setMoney(float money) {
+        this.money = money;
+    }
 }
 
 enum SessionStatus{
