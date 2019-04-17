@@ -28,6 +28,7 @@ dependencies {
     compile 'com.alibaba:fastjson:1.2.57'
 
     compile group: 'org.nanohttpd', name: 'nanohttpd', version: '2.3.0'
+    compile group: 'org.xerial', name: 'sqlite-jdbc', version: '3.7.2'
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'

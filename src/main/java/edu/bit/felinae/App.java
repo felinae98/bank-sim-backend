@@ -4,6 +4,7 @@
 package edu.bit.felinae;
 
 import java.io.IOException;
+import redis.clients.jedis.Jedis;
 
 public class App {
     private boolean running = true;
@@ -19,13 +20,17 @@ public class App {
     }
 
     public static void main(String[] args) {
-        try{
-            HttpService server;
-            server =  new HttpService();
-            Runtime.getRuntime().addShutdownHook(new ExitHandler(server));
-        }catch (IOException ioe){
-            System.err.println("error");
-            System.exit(1);
-        }
+        // flush redis
+        Jedis jedis = new Jedis("localhost");
+        jedis.flushAll();
+        Database db = Database.getInstance();
+//        try{
+//            HttpService server;
+//            server =  new HttpService();
+//            Runtime.getRuntime().addShutdownHook(new ExitHandler(server));
+//        }catch (IOException ioe){
+//            System.err.println("error");
+//            System.exit(1);
+//        }
     }
 }
