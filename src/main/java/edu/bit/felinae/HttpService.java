@@ -117,6 +117,8 @@ public class HttpService extends NanoHTTPD {
         JSONObject json = new JSONObject();
         if(session ==  null)
             return newFixedLengthResponse(Response.Status.BAD_REQUEST, NanoHTTPD.MIME_PLAINTEXT, "error");
+        if(session.status != SessionStatus.TransactionDone)
+            return newFixedLengthResponse(Response.Status.BAD_REQUEST, NanoHTTPD.MIME_PLAINTEXT, "error");
         if(session.transaction == Transaction.Register) {
             json.put("result", session.res);
         }
