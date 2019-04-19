@@ -12,7 +12,7 @@ public class Worker extends Thread{
         do{
             session_id = queue.poll();
         }while(!queue.getShutdown() && session_id == null);
-        if(queue.getShutdown()) return;
+        if(session_id!=null && queue.getShutdown()) return;
         Session session = Session.getSession(session_id);
         if(session.transaction_type==TransactionType.account){
             switch (session.transaction){
@@ -28,6 +28,12 @@ public class Worker extends Thread{
                     }
                     Session.saveSession(session_id, session);
                     break;
+                case Delete:
+                    break;
+            }
+        }
+        else{
+            switch (session.transaction) {
                 case BalanceInquery:
                     if(db.checkCreditial(session.username, session.password)) {
                         session.res = "success";
@@ -38,7 +44,32 @@ public class Worker extends Thread{
 
                     Session.saveSession(session_id, session);
                     break;
-                case Delete:
+                case Deposit:
+                    if(db.checkCreditial(session.username, session.password)) {
+                        if(db.deposit(session.username, session.amount)){
+                            session.res = "success";
+                        }
+                        else{
+                            session.res = "fail";
+                        }
+                    }else{
+                        session.res = "password error";
+                    }
+
+                    Session.saveSession(session_id, session);
+                    break;
+                case Withdrawal:
+                    if(db.checkCreditial(session.username, session.password)) {
+                        if(db.withdrawal(session.username, session.amount)){
+                            session.res = "success";
+                        }
+                        else{
+                            session.res = "fail";
+                        }
+                    }else{
+                        session.res = "password error";
+                    }
+                    Session.saveSession(session_id, session);
                     break;
             }
         }
@@ -48,5 +79,6 @@ public class Worker extends Thread{
         }catch (Exception e){
             System.err.println(e.getMessage());
         }
+        if(queue.getShutdown()) return;
     }
 }

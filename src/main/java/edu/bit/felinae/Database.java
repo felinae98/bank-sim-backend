@@ -19,7 +19,6 @@ public class Database {
             ResultSet set = md.getTables(null, null, "%", null);
             while(set.next()){
                 table_name.add(set.getString(3));
-                System.out.println(set.getString(3));
             }
             if(!table_name.contains("user")){
                 lock.lock();
@@ -45,7 +44,6 @@ public class Database {
         try {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection(url);
-            System.out.println("success");
             initDatabase();
         }catch (SQLException s) {
             System.err.println(s.toString());
