@@ -14,6 +14,8 @@ public class Worker extends Thread{
         }while(!queue.getShutdown() && session_id == null);
         if(session_id!=null && queue.getShutdown()) return;
         Session session = Session.getSession(session_id);
+        session.status = SessionStatus.inTransaction;
+        Session.saveSession(session_id, session);
         if(session.transaction_type==TransactionType.account){
             switch (session.transaction){
                 case Deposit:
@@ -26,7 +28,6 @@ public class Worker extends Thread{
                     }else{
                         session.res = "fail";
                     }
-                    Session.saveSession(session_id, session);
                     break;
                 case Delete:
                     break;
@@ -42,7 +43,6 @@ public class Worker extends Thread{
                         session.res = "password error";
                     }
 
-                    Session.saveSession(session_id, session);
                     break;
                 case Deposit:
                     if(db.checkCreditial(session.username, session.password)) {
@@ -56,7 +56,6 @@ public class Worker extends Thread{
                         session.res = "password error";
                     }
 
-                    Session.saveSession(session_id, session);
                     break;
                 case Withdrawal:
                     if(db.checkCreditial(session.username, session.password)) {
@@ -69,7 +68,6 @@ public class Worker extends Thread{
                     }else{
                         session.res = "password error";
                     }
-                    Session.saveSession(session_id, session);
                     break;
             }
         }
@@ -79,6 +77,8 @@ public class Worker extends Thread{
         }catch (Exception e){
             System.err.println(e.getMessage());
         }
+        session.status = SessionStatus.TransactionDone;
+        Session.saveSession(session_id, session);
         if(queue.getShutdown()) return;
     }
 }

@@ -23,6 +23,8 @@ public class HttpService extends NanoHTTPD {
                 return handleQueryStatus(sess);
             case "/queue":
                 return handleSubmit(sess);
+            case "/result":
+                return handleGetResult(sess);
             default:
                 return newFixedLengthResponse("404");
         }
@@ -109,5 +111,22 @@ public class HttpService extends NanoHTTPD {
             return newFixedLengthResponse(Response.Status.BAD_REQUEST, NanoHTTPD.MIME_PLAINTEXT, "bad body");
         }
 
+    }
+    private Response handleGetResult(IHTTPSession sess) {
+        Session session = getSession(sess);
+        JSONObject json = new JSONObject();
+        if(session ==  null)
+            return newFixedLengthResponse(Response.Status.BAD_REQUEST, NanoHTTPD.MIME_PLAINTEXT, "error");
+        if(session.transaction == Transaction.Register) {
+            json.put("result", session.res);
+        }
+        else if(session.transaction == Transaction.Withdrawal || session.transaction == Transaction.BalanceInquery||
+        session.transaction == Transaction.Deposit) {
+            json.put("result", session.res);
+            json.put("balance", session.balance);
+        }
+        Jedis jedis = new Jedis("localhost");
+        jedis.del(sess.getCookies().read("session"));
+        return newFixedLengthResponse(json.toJSONString());
     }
 }
