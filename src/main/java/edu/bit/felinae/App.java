@@ -24,6 +24,9 @@ public class App {
         Jedis jedis = new Jedis("localhost");
         jedis.flushAll();
         Database db = Database.getInstance();
+        db.cleanDB();
+        db.register("123", "1");
+        System.out.println(db.checkBalance("123"));
 //        try{
 //            HttpService server;
 //            server =  new HttpService();

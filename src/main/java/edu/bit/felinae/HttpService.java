@@ -92,6 +92,13 @@ public class HttpService extends NanoHTTPD {
                     break;
                 case "query":
                     session.transaction = Transaction.BalanceInquery;
+                    break;
+                case "register":
+                    session.transaction = Transaction.Register;
+                    break;
+                case "delete":
+                    session.transaction = Transaction.Delete;
+                    break;
             }
             String session_json = JSON.toJSONString(session);
             jedis.set(hashingRes, session_json);
