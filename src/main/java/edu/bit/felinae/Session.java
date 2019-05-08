@@ -23,6 +23,12 @@ public class Session {
         String json = JSON.toJSONString(session);
         jedis.set(session_id, json);
     }
+
+    @Override
+    public String toString() {
+        return "transaction:" + transaction.toString() + " transaction_type" + transaction_type.toString() +
+                " username: " +username + " password: " + password + " amount: " + amount + " status: " + status.toString();
+    }
 }
 
 enum SessionStatus{

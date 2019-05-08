@@ -8,6 +8,7 @@ import redis.clients.jedis.Jedis;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.HashMap;
+import java.util.Map;
 
 public class HttpService extends NanoHTTPD {
 
@@ -64,8 +65,9 @@ public class HttpService extends NanoHTTPD {
         Session session = new Session();
         Response res = newFixedLengthResponse(hashingRes);
         res.addHeader("Set-Cookie", "session="+hashingRes);
-        HashMap<String, String> map = new HashMap<>();
         try {
+            Map<String, String> header = sess.getHeaders();
+            HashMap<String, String> map = new HashMap<>();
             sess.parseBody(map);
             String operation_string = map.get("postData");
             JSONObject root_obj = JSON.parseObject(operation_string);
@@ -102,12 +104,16 @@ public class HttpService extends NanoHTTPD {
                     session.transaction = Transaction.Delete;
                     break;
             }
+            if(session.transaction == Transaction.Deposit || session.transaction == Transaction.Withdrawal) {
+                session.amount = transaction_obj.getInteger("amount");
+            }
             String session_json = JSON.toJSONString(session);
             jedis.set(hashingRes, session_json);
             MainQueue.getInstance().enqueue(hashingRes);
             return res;
 
         }catch (Exception e){
+            System.err.println(e.getStackTrace());
             return newFixedLengthResponse(Response.Status.BAD_REQUEST, NanoHTTPD.MIME_PLAINTEXT, "bad body");
         }
 

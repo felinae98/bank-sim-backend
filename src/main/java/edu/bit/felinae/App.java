@@ -25,15 +25,15 @@ public class App {
         jedis.flushAll();
         Database db = Database.getInstance();
         db.cleanDB();
-        db.register("123", "1");
-        System.out.println(db.checkBalance("123"));
-//        try{
-//            HttpService server;
-//            server =  new HttpService();
-//            Runtime.getRuntime().addShutdownHook(new ExitHandler(server));
-//        }catch (IOException ioe){
-//            System.err.println("error");
-//            System.exit(1);
-//        }
+        Worker worker1 = new Worker();
+        worker1.start();
+        try{
+            HttpService server;
+            server =  new HttpService();
+            Runtime.getRuntime().addShutdownHook(new ExitHandler(server));
+        }catch (IOException ioe){
+            System.err.println("error");
+            System.exit(1);
+        }
     }
 }
