@@ -19,16 +19,23 @@ public class HttpService extends NanoHTTPD {
     @Override
     public Response serve(IHTTPSession sess) {
         String uri = sess.getUri();
+        Response res;
         switch (uri){
             case "/status":
-                return handleQueryStatus(sess);
+                res = handleQueryStatus(sess);
+                break;
             case "/queue":
-                return handleSubmit(sess);
+                res = handleSubmit(sess);
+                break;
             case "/result":
-                return handleGetResult(sess);
+                res = handleGetResult(sess);
+                break;
             default:
-                return newFixedLengthResponse("404");
+                res = newFixedLengthResponse("404");
         }
+        res.addHeader("Access-Control-Allow-Origin", "*");
+        res.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        return res;
     }
     private Session getSession(IHTTPSession sess) {
         CookieHandler cookie = sess.getCookies();
