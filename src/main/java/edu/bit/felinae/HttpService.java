@@ -35,6 +35,7 @@ public class HttpService extends NanoHTTPD {
         }
         res.addHeader("Access-Control-Allow-Origin", "*");
         res.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        res.addHeader("Access-Control-Max-Age", "86400");
         return res;
     }
     private Session getSession(IHTTPSession sess) {
