@@ -6,9 +6,11 @@ import fi.iki.elonen.NanoHTTPD;
 import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
+import java.net.URI;
 
 public class HttpService extends NanoHTTPD {
 
@@ -18,35 +20,43 @@ public class HttpService extends NanoHTTPD {
     }
     @Override
     public Response serve(IHTTPSession sess) {
-        String uri = sess.getUri();
-        Response res;
-        if(Method.OPTIONS.equals(sess.getMethod())){
-            res = newFixedLengthResponse("");
-            res.addHeader("Allow", "OPTIONS, GET, POST");
-            res.addHeader("Access-Control-Max-Age", "86400");
-        }
-        else {
-            switch (uri) {
-                case "/status":
-                    res = handleQueryStatus(sess);
-                    break;
-                case "/queue":
-                    res = handleSubmit(sess);
-                    break;
-                case "/result":
-                    res = handleGetResult(sess);
-                    break;
-                default:
-                    res = newFixedLengthResponse("404");
+        String uristr = sess.getUri();
+        try {
+            URI uri = new URI(uristr);
+            String path = uri.getPath();
+            Response res;
+            if(Method.OPTIONS.equals(sess.getMethod())){
+                res = newFixedLengthResponse("");
+                res.addHeader("Allow", "OPTIONS, GET, POST");
+                res.addHeader("Access-Control-Max-Age", "86400");
             }
+            else {
+                switch (path) {
+                    case "/status":
+                        res = handleQueryStatus(sess);
+                        break;
+                    case "/queue":
+                        res = handleSubmit(sess);
+                        break;
+                    case "/result":
+                        res = handleGetResult(sess);
+                        break;
+                    default:
+                        res = newFixedLengthResponse("404");
+                }
+            }
+            res.addHeader("Access-Control-Allow-Origin", "*");
+            res.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            return res;
         }
-        res.addHeader("Access-Control-Allow-Origin", "*");
-        res.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        return res;
+        catch (URISyntaxException e){
+            System.err.println(e.getMessage());
+            return newFixedLengthResponse(Response.Status.BAD_REQUEST, NanoHTTPD.MIME_PLAINTEXT, "error");
+        }
     }
     private Session getSession(IHTTPSession sess) {
-        CookieHandler cookie = sess.getCookies();
-        String session_id = cookie.read("session");
+        Map<String, String> param = sess.getParms();
+        String session_id = param.get("session");
         if(session_id == null) return null;
         Jedis jedis = new Jedis("localhost");
         String session_str = jedis.get(session_id);
