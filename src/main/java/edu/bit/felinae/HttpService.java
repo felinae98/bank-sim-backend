@@ -120,7 +120,7 @@ public class HttpService extends NanoHTTPD {
             return res;
 
         }catch (Exception e){
-            System.err.println(e.getStackTrace());
+            e.printStackTrace();
             return newFixedLengthResponse(Response.Status.BAD_REQUEST, NanoHTTPD.MIME_PLAINTEXT, "bad body");
         }
 
