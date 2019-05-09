@@ -20,22 +20,28 @@ public class HttpService extends NanoHTTPD {
     public Response serve(IHTTPSession sess) {
         String uri = sess.getUri();
         Response res;
-        switch (uri){
-            case "/status":
-                res = handleQueryStatus(sess);
-                break;
-            case "/queue":
-                res = handleSubmit(sess);
-                break;
-            case "/result":
-                res = handleGetResult(sess);
-                break;
-            default:
-                res = newFixedLengthResponse("404");
+        if(Method.OPTIONS.equals(sess.getMethod())){
+            res = newFixedLengthResponse("");
+            res.addHeader("Allow", "OPTIONS, GET, POST");
+            res.addHeader("Access-Control-Max-Age", "86400");
+        }
+        else {
+            switch (uri) {
+                case "/status":
+                    res = handleQueryStatus(sess);
+                    break;
+                case "/queue":
+                    res = handleSubmit(sess);
+                    break;
+                case "/result":
+                    res = handleGetResult(sess);
+                    break;
+                default:
+                    res = newFixedLengthResponse("404");
+            }
         }
         res.addHeader("Access-Control-Allow-Origin", "*");
         res.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-        res.addHeader("Access-Control-Max-Age", "86400");
         return res;
     }
     private Session getSession(IHTTPSession sess) {
