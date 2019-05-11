@@ -23,7 +23,7 @@ public class HttpService extends NanoHTTPD {
         String uristr = sess.getUri();
         try {
             URI uri = new URI(uristr);
-            System.out.println(uri);
+            System.out.println(uristr);
             String path = uri.getPath();
             Response res;
             if(Method.OPTIONS.equals(sess.getMethod())){
@@ -57,6 +57,7 @@ public class HttpService extends NanoHTTPD {
     }
     private Session getSession(IHTTPSession sess) {
         Map<String, String> param = sess.getParms();
+        System.out.println(param.toString());
         String session_id = param.get("session");
         if(session_id == null) return null;
         Jedis jedis = new Jedis("localhost");
