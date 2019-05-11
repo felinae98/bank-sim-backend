@@ -160,7 +160,7 @@ public class HttpService extends NanoHTTPD {
             json.put("balance", session.balance);
         }
         Jedis jedis = new Jedis("localhost");
-        jedis.del(sess.getCookies().read("session"));
+        jedis.expire(sess.getParms().get("session"), 60);
         return newFixedLengthResponse(json.toJSONString());
     }
 }
