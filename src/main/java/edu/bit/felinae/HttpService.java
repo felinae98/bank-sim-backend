@@ -23,6 +23,7 @@ public class HttpService extends NanoHTTPD {
         String uristr = sess.getUri();
         try {
             URI uri = new URI(uristr);
+            System.out.println(uri);
             String path = uri.getPath();
             Response res;
             if(Method.OPTIONS.equals(sess.getMethod())){

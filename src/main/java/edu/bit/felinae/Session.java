@@ -26,7 +26,7 @@ public class Session {
 
     @Override
     public String toString() {
-        return "transaction:" + transaction.toString() + " transaction_type" + transaction_type.toString() +
+        return "transaction: " + transaction.toString() + " transaction_type: " + transaction_type.toString() +
                 " username: " +username + " password: " + password + " amount: " + amount + " status: " + status.toString();
     }
 }
