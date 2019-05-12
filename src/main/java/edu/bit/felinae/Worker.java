@@ -11,6 +11,7 @@ public class Worker extends Thread{
         String session_id;
         while (true) {
             do {
+                System.out.println("try to get from queue");
                 session_id = queue.poll();
             } while (!queue.getShutdown() && session_id == null);
             if (session_id != null && queue.getShutdown()) break;
