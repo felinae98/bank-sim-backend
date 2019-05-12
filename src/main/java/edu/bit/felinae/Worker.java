@@ -13,10 +13,19 @@ public class Worker extends Thread{
             do {
                 System.out.println("try to get from queue");
                 session_id = queue.poll();
-                System.out.println("time out or got session");
+                if(session_id == null){
+                    System.out.println("time out");
+                }
+                else{
+                    System.out.println("got session: "+ session_id);
+                }
             } while (!queue.getShutdown() && session_id == null);
-            if (session_id != null && queue.getShutdown()) break;
+            // if (session_id != null && queue.getShutdown()) break;
+            System.out.println("try to decode session");
             Session session = Session.getSession(session_id);
+            if(session == null) {
+                System.out.println("fail to get session from redis");
+            }
             System.out.println("Get session from queue: " + session);
             session.status = SessionStatus.inTransaction;
             Session.saveSession(session_id, session);
