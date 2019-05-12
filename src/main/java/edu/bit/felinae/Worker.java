@@ -13,6 +13,7 @@ public class Worker extends Thread{
             do {
                 System.out.println("try to get from queue");
                 session_id = queue.poll();
+                System.out.println("time out or got session");
             } while (!queue.getShutdown() && session_id == null);
             if (session_id != null && queue.getShutdown()) break;
             Session session = Session.getSession(session_id);
