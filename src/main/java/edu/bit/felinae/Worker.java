@@ -13,9 +13,9 @@ public class Worker extends Thread{
             do {
                 session_id = queue.poll();
             } while (!queue.getShutdown() && session_id == null);
-            if (session_id != null && queue.getShutdown()) return;
+            if (session_id != null && queue.getShutdown()) break;
             Session session = Session.getSession(session_id);
-            System.out.println(session);
+            System.out.println("Get session from queue: " + session);
             session.status = SessionStatus.inTransaction;
             Session.saveSession(session_id, session);
             if (session.transaction_type == TransactionType.account) {
@@ -70,6 +70,7 @@ public class Worker extends Thread{
                         break;
                 }
             }
+            System.out.println("Process Done, wait rand");
             Random rand = new Random();
             try {
                 Thread.sleep(rand.nextInt(2000) + 1000);
@@ -78,7 +79,9 @@ public class Worker extends Thread{
             }
             session.status = SessionStatus.TransactionDone;
             Session.saveSession(session_id, session);
-            if (queue.getShutdown()) return;
+            System.out.println("wait done, save session");
+            if (queue.getShutdown()) break;
         }
+        System.out.println("worker died");
     }
 }

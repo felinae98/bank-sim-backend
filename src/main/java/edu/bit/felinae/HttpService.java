@@ -96,6 +96,7 @@ public class HttpService extends NanoHTTPD {
             HashMap<String, String> map = new HashMap<>();
             sess.parseBody(map);
             String operation_string = map.get("postData");
+            System.out.println(operation_string);
             JSONObject root_obj = JSON.parseObject(operation_string);
             String transaction_type = root_obj.getString("transactionType");
             JSONObject account_obj = root_obj.getJSONObject("account");
