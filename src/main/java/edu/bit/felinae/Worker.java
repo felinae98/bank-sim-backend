@@ -1,6 +1,7 @@
 package edu.bit.felinae;
 
 
+import javax.management.openmbean.SimpleType;
 import java.util.Random;
 
 public class Worker extends Thread{
@@ -11,17 +12,9 @@ public class Worker extends Thread{
         String session_id;
         while (true) {
             do {
-                System.out.println("try to get from queue");
                 session_id = queue.poll();
-                if(session_id == null){
-                    System.out.println("time out");
-                }
-                else{
-                    System.out.println("got session: "+ session_id);
-                }
             } while (!queue.getShutdown() && session_id == null);
             // if (session_id != null && queue.getShutdown()) break;
-            System.out.println("try to decode session");
             Session session = Session.getSession(session_id);
             if(session == null) {
                 System.out.println("fail to get session from redis");
