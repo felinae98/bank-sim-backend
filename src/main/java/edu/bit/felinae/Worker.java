@@ -56,6 +56,7 @@ public class Worker extends Thread{
                             } else {
                                 session.res = "fail";
                             }
+                            session.balance = db.checkBalance(session.username);
                         } else {
                             session.res = "password error";
                         }
@@ -68,6 +69,7 @@ public class Worker extends Thread{
                             } else {
                                 session.res = "fail";
                             }
+                            session.balance = db.checkBalance(session.username);
                         } else {
                             session.res = "password error";
                         }
