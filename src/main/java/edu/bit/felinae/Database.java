@@ -89,6 +89,18 @@ public class Database {
             return false;
         }
     }
+    public boolean delete(String username) {
+        String sql = "DELETE FROM user WHERE username=?";
+        try{
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, username);
+            pstmt.executeUpdate();
+            return true;
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+            return false;
+        }
+    }
 
     public double checkBalance(String username) {
         String sql = "SELECT balance FROM user WHERE username=?";

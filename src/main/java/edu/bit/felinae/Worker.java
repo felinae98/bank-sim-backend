@@ -1,7 +1,6 @@
 package edu.bit.felinae;
 
 
-import javax.management.openmbean.SimpleType;
 import java.util.Random;
 
 public class Worker extends Thread{
@@ -36,6 +35,13 @@ public class Worker extends Thread{
                         }
                         break;
                     case Delete:
+                        if (db.checkCreditial(session.username, session.password)) {
+                            if(db.delete(session.username)){
+                                session.res = "success";
+                            } else {
+                                session.res = "password error";
+                            }
+                        }
                         break;
                 }
             } else {
