@@ -15,7 +15,6 @@ public class Session {
     public static Session getSession(String session_id){
         Jedis jedis = new Jedis("localhost");
         String json = jedis.get(session_id);
-        System.out.println("got session from redis: " + json);
         if(json == null) return null;
         return JSON.parseObject(json, Session.class);
     }
