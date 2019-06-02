@@ -23,7 +23,6 @@ public class HttpService extends NanoHTTPD {
         String uristr = sess.getUri();
         try {
             URI uri = new URI(uristr);
-            System.out.println(uristr);
             String path = uri.getPath();
             Response res;
             if(Method.OPTIONS.equals(sess.getMethod())){
@@ -57,7 +56,6 @@ public class HttpService extends NanoHTTPD {
     }
     private Session getSession(IHTTPSession sess) {
         Map<String, String> param = sess.getParms();
-        System.out.println(param.toString());
         String session_id = param.get("session");
         if(session_id == null) return null;
         Jedis jedis = new Jedis("localhost");
@@ -96,7 +94,7 @@ public class HttpService extends NanoHTTPD {
             HashMap<String, String> map = new HashMap<>();
             sess.parseBody(map);
             String operation_string = map.get("postData");
-            System.out.println(operation_string);
+            System.out.println("[INFO] Get Request from Client: " + operation_string);
             JSONObject root_obj = JSON.parseObject(operation_string);
             String transaction_type = root_obj.getString("transactionType");
             JSONObject account_obj = root_obj.getJSONObject("account");
