@@ -4,6 +4,15 @@ package edu.bit.felinae;
 import java.util.Random;
 
 public class Worker extends Thread{
+    private int num;
+    public Worker(){
+        super();
+        this.num = 1;
+    }
+    public Worker(int num){
+        super();
+        this.num = num;
+    }
     @Override
     public void run() {
         MainQueue queue = MainQueue.getInstance();
@@ -18,7 +27,7 @@ public class Worker extends Thread{
             if(session == null) {
                 System.out.println("fail to get session from redis");
             }
-            System.out.println("[INFO] Worker 1 Get session from queue: " + session);
+            System.out.println("[INFO] Worker " + num + " Get session from queue: " + session);
             session.status = SessionStatus.inTransaction;
             Session.saveSession(session_id, session);
             if (session.transaction_type == TransactionType.account) {
@@ -82,7 +91,7 @@ public class Worker extends Thread{
                         break;
                 }
             }
-            System.out.println("[INFO] Worker 1 Process Done, wait random time");
+            System.out.println("[INFO] Worker " + num + " Process Done, wait random time");
             Random rand = new Random();
             try {
                 Thread.sleep(rand.nextInt(2000) + 1000);
@@ -91,7 +100,7 @@ public class Worker extends Thread{
             }
             session.status = SessionStatus.TransactionDone;
             Session.saveSession(session_id, session);
-            System.out.println("[INFO] Worker 1 Wait Done, save result");
+            System.out.println("[INFO] Worker " + num + " Wait Done, save result");
             if (queue.getShutdown()) break;
         }
         System.out.println("worker died");
