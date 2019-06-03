@@ -150,7 +150,7 @@ public class HttpService extends NanoHTTPD {
             return newFixedLengthResponse(Response.Status.BAD_REQUEST, NanoHTTPD.MIME_PLAINTEXT, "error");
         if(session.status != SessionStatus.TransactionDone)
             return newFixedLengthResponse(Response.Status.BAD_REQUEST, NanoHTTPD.MIME_PLAINTEXT, "error");
-        if(session.transaction == Transaction.Register) {
+        if(session.transaction == Transaction.Register || session.transaction == Transaction.Delete) {
             json.put("result", session.res);
         }
         else if(session.transaction == Transaction.Withdrawal || session.transaction == Transaction.BalanceInquery||
