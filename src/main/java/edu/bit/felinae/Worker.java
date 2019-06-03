@@ -48,8 +48,10 @@ public class Worker extends Thread{
                             if(db.delete(session.username)){
                                 session.res = "success";
                             } else {
-                                session.res = "password error";
+                                session.res = "fail";
                             }
+                        } else {
+                            session.res = "password error";
                         }
                         break;
                 }
